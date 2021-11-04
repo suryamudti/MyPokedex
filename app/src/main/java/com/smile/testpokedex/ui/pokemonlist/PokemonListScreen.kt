@@ -57,7 +57,8 @@ import com.smile.testpokedex.data.models.PokedexListEntry
 
 @Composable
 fun PokemonListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonListViewModel = hiltNavGraphViewModel()
 ) {
     Surface(
         color = MaterialTheme.colors.background,
@@ -78,7 +79,7 @@ fun PokemonListScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-
+                viewModel.searchPokemonList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             Pokemonlist(navController = navController)
@@ -114,7 +115,7 @@ fun SearchBar(
                 .background(Color.White, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    isHintShown = it.isFocused.not()
+                    isHintShown = it.isFocused.not() && text.isNotEmpty()
                 }
         )
         if (isHintShown) {
@@ -136,6 +137,7 @@ fun Pokemonlist(
     val endReached by remember { viewModel.endReached }
     val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
+    val isSearching by remember { viewModel.isSearching }
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp)
@@ -146,7 +148,7 @@ fun Pokemonlist(
             pokemonlist.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached) {
+            if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
                 viewModel.loadPokemonPaginated()
             }
             PokedexRow(index = it, entries = pokemonlist, navController = navController)
@@ -200,11 +202,6 @@ fun PokedexEntry(
             Image(
                 painter = rememberImagePainter(request = ImageRequest.Builder(LocalContext.current)
                     .data(entry.image)
-//                    .target {
-//                        viewModel.calculateDominantColor(it) {
-//                            dominantColor = it
-//                        }
-//                    }
                     .build(),),
                 contentDescription = entry.name,
                 modifier = Modifier
