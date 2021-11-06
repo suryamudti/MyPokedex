@@ -200,9 +200,11 @@ fun PokedexEntry(
     ) {
         Column {
             Image(
-                painter = rememberImagePainter(request = ImageRequest.Builder(LocalContext.current)
-                    .data(entry.image)
-                    .build(),),
+                painter = rememberImagePainter(
+                    request = ImageRequest.Builder(LocalContext.current)
+                        .data(entry.image)
+                        .build(),
+                ),
                 contentDescription = entry.name,
                 modifier = Modifier
                     .size(120.dp)
@@ -257,7 +259,7 @@ fun RetrySection(
         Button(
             onClick = { onRetry() },
             modifier = Modifier.align(CenterHorizontally)
-            
+
         ) {
             Text(text = "Retry")
         }

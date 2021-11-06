@@ -3,6 +3,7 @@ package com.smile.testpokedex.data.remote
 import com.smile.testpokedex.data.remote.responses.Pokemon
 import com.smile.testpokedex.data.remote.responses.PokemonList
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -18,7 +19,7 @@ interface PokeApi {
 
     @GET("pokemon/{name}")
     suspend fun getPokemonData(
-        @Query("name") name: String
+        @Path("name") name: String
     ): Pokemon
 
 
