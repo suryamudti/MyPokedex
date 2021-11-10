@@ -1,7 +1,7 @@
 # Android Live Soccer App
 
 Pokemon List Screen
-<img src="misc/Screenshot_1.png" width="200"> <img src="misc/Screenshot_6.png" width="200">
+<img src="misc/Screenshot_6.png" width="200">
 
 Pokemon Detail Screen (in progress)
 
