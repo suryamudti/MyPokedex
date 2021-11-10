@@ -1,4 +1,4 @@
-# Android Live Soccer App
+# MyPokeDex Compose App
 
 Pokemon List Screen
 <img src="misc/Screenshot_6.png" width="200">
