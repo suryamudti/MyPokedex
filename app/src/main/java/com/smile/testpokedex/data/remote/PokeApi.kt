@@ -21,6 +21,4 @@ interface PokeApi {
     suspend fun getPokemonData(
         @Path("name") name: String
     ): Pokemon
-
-
 }
