@@ -365,7 +365,36 @@ fun PokemonStat(
     }
 }
 
-
+@Composable
+fun PokemonBaseStats(
+    pokemonInfo: Pokemon,
+    animDelayPerItem: Int = 100
+) {
+    val maxBaseStat = remember {
+        pokemonInfo.stats.maxOf { it.baseStat }
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Base Stats:",
+            fontSize = 20.sp,
+            color = MaterialTheme.colors.onSurface
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        for (i in pokemonInfo.stats.indices) {
+            val stat = pokemonInfo.stats[i]
+            PokemonStat(
+                statName = parseStatToAbbr(stat),
+                statValue = stat.baseStat,
+                statMaxValue = maxBaseStat,
+                statColor = parseStatToColor(stat),
+                animDelay = i * animDelayPerItem
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
 
 
 
