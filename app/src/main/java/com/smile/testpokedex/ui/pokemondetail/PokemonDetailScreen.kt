@@ -1,8 +1,11 @@
 package com.smile.testpokedex.ui.pokemondetail
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +53,8 @@ import com.smile.testpokedex.R
 import com.smile.testpokedex.data.remote.responses.Pokemon
 import com.smile.testpokedex.data.remote.responses.Type
 import com.smile.testpokedex.util.Resource
+import com.smile.testpokedex.util.parseStatToAbbr
+import com.smile.testpokedex.util.parseStatToColor
 import com.smile.testpokedex.util.parseTypeToColor
 import java.lang.Math.round
 import java.util.*
@@ -67,10 +72,11 @@ fun PokemonDetailScreen(
         value = viewModel.getPokemonInfo(pokemonName)
     }.value
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(dominantColor)
-        .padding(bottom = 16.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(dominantColor)
+            .padding(bottom = 16.dp)
     ) {
         PokemonDetailTopSection(
             navController = navController,
@@ -104,10 +110,12 @@ fun PokemonDetailScreen(
                     bottom = 16.dp
                 )
         )
-        Box(contentAlignment = Alignment.TopCenter,
+        Box(
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier
-                .fillMaxSize()) {
-            if(pokemonInfo is Resource.Success) {
+                .fillMaxSize()
+        ) {
+            if (pokemonInfo is Resource.Success) {
                 pokemonInfo.data?.sprites?.let {
                     Image(
                         painter = rememberImagePainter(
@@ -124,8 +132,6 @@ fun PokemonDetailScreen(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -209,7 +215,10 @@ fun PokemonDetailSection(
         )
 
         PokemonTypeSection(types = pokemonInfo.types)
-        PokemonDetailDataSection(pokemonWeight = pokemonInfo.weight, pokemonHeight = pokemonInfo.height)
+        PokemonDetailDataSection(
+            pokemonWeight = pokemonInfo.weight,
+            pokemonHeight = pokemonInfo.height
+        )
 
     }
 }
@@ -275,7 +284,6 @@ fun PokemonDetailDataSection(
             modifier = Modifier.weight(1f)
         )
     }
-
 }
 
 @Composable
@@ -298,6 +306,66 @@ fun PokemonDetailDataItem(
         )
     }
 }
+
+@Composable
+fun PokemonStat(
+    statName: String,
+    statValue: Int,
+    statMaxValue: Int,
+    statColor: Color,
+    height: Dp = 28.dp,
+    animDuration: Int = 1000,
+    animDelay: Int = 0
+) {
+    var animationPlayed by remember {
+        mutableStateOf(false)
+    }
+    val currentPercent = animateFloatAsState(
+        targetValue = if (animationPlayed) {
+            statValue / statMaxValue.toFloat()
+        } else 0f,
+        animationSpec = tween(
+            animDuration,
+            animDelay
+        )
+    )
+    LaunchedEffect(key1 = true) {
+        animationPlayed = true
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(
+                if (isSystemInDarkTheme())
+                    Color(0xFF505050)
+                else
+                    Color.LightGray
+            )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(currentPercent.value)
+                .clip(CircleShape)
+                .background(statColor)
+                .padding(horizontal = 8.dp)
+        ) {
+            Text(
+                text = statName,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = (currentPercent.value + statMaxValue).toInt().toString(),
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+
 
 
 
