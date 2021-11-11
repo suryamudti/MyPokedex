@@ -1,9 +1,9 @@
 # MyPokeDex Compose App
 
-##Pokemon List Screen
+## Pokemon List Screen
 <img src="misc/Screenshot_6.png" width="200">
 
-##Pokemon Detail Screen
+## Pokemon Detail Screen
 <img src="misc/Screenshot_7.png" width="200">
 
 
