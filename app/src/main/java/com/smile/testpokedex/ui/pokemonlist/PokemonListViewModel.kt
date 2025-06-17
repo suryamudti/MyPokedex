@@ -96,6 +96,8 @@ class PokemonListViewModel @Inject constructor(
                 is Resource.Error -> {
                     loadError.value = result.message!!
                 }
+
+                is Resource.Loading<*> -> {}
             }
         }
     }
